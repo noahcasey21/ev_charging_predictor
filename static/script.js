@@ -26,7 +26,7 @@ function displayStations(leftLong, rightLong, bottomLat, topLat, station_data) {
     //boomer loop
     for (var i = 0; i < filtered_station_data.length; i++) {
         var station = filtered_station_data[i]
-        L.marker([station['Latitude'], station['Longitude']])
+        L.circleMarker([station['Latitude'], station['Longitude']], {radius : 3, renderer : myRenderer})
             .addTo(map)
             .bindPopup(station['Station Name'] + '<br>' + station['Street Address']
                 + '<br>' + station.City + ', ' + station.State
@@ -43,10 +43,12 @@ var map = L.map('map', {
     'center': [33.77, -84.40],
     'zoom': 10,
     'maxBounds': maxBounds,
-    'zoomSnap': 0.25,
+    'zoomSnap': 0.5,
     'minZoom': 4,
     'maxZoom': 15
 });
+
+var myRenderer = L.canvas({ padding: 0.5 });
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -55,6 +57,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const loaderContainer = document.getElementById('loader-container');
 //get data
 getData('/station_data').then((data) => {
+    //dispose of existing prediction(s)
     loaderContainer.style.display = 'none'
     const station_data = data
     console.log(data)

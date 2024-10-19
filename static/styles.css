@@ -33,17 +33,17 @@
 #modelSend {
   background-color: rgba(51, 51, 51, 0.05);
   border-radius: 8px;
-  border-width: 0;
+  border-width: 10px;
   color: #333333;
   cursor: pointer;
   display: inline-block;
   font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: bold;
   line-height: 20px;
   list-style: none;
   margin: 0;
-  padding: 10px 12px;
+  padding: 10px 20px;
   text-align: center;
   transition: all 200ms;
   vertical-align: baseline;
@@ -52,4 +52,9 @@
   -webkit-user-select: none;
   touch-action: manipulation;
 
+}
+
+#modelSend:hover {
+    color: white;
+    background-color: black;
 }
