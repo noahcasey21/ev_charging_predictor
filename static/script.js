@@ -75,10 +75,20 @@ getData('/station_data').then((data) => {
     document.getElementById('modelSend').addEventListener('click', () => {
 
         [top, bottom, left, right] = getMapBounds();
+        //filter locations
         var filtered_station_data = station_data.filter(obj =>
-            obj.Longitude >= leftLong && obj.Longitude <= rightLong && obj.Latitude >= bottomLat && obj.Latitude <= topLat
+            obj.Longitude >= left && obj.Longitude <= right && obj.Latitude >= bottom && obj.Latitude <= top
         );
 
+        const keepKeys = ['Latitude', 'Longitude', 'Open Date'];
+
+        //filter keys and convert to array of arrays
+        filtered_station_data = filtered_station_data.map(obj => {
+            const new_obj = {};
+            keepKeys.forEach(e => new_obj[e] = obj[e] );
+            return Object.values(new_obj);
+        });
+        
         fetch('/run_model', {
             method: 'POST',
             headers: {

@@ -33,11 +33,20 @@ def get_data() -> Response:
 
 
 @app.route('/run_model', methods=['GET', 'POST'])
-def run_model(json_data) -> Response:
+def run_model() -> Response:
+    '''
+    Parameters:
+    --------
+    list_data: this is a list of lists where sublists have form [lat, long, open_date]
+    
+    Returns:
+    -------
+    List of latitudes and longitudes based on model calls
+    '''
     #this will be a method that calls the model on given data
     #may format the return data to be used in webpage
     #post to local file that can be detected and run by javascript
-    pass
+    return request.json
 
 
 if __name__ == "__main__":
