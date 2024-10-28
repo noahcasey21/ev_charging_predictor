@@ -60,7 +60,7 @@ getData('/station_data').then((data) => {
     //dispose of existing prediction(s)
     loaderContainer.style.display = 'none'
     const station_data = data
-    console.log(data)
+    //console.log(data)
 
     var [top, bottom, left, right] = getMapBounds();
 
@@ -88,6 +88,8 @@ getData('/station_data').then((data) => {
             keepKeys.forEach(e => new_obj[e] = obj[e] );
             return Object.values(new_obj);
         });
+
+        console.log(filtered_station_data)
         
         fetch('/run_model', {
             method: 'POST',
@@ -99,7 +101,20 @@ getData('/station_data').then((data) => {
             }),
         })
         .then(response => response.json())
-        .then(data => console.log('Response:', data)) //this is where we post our prediction
+        .then(data => {
+            const zoom = map.getZoom()
+            map.setZoom(zoom - 5)
+            //structure: {"frank's algo" : [1, 2], ...}
+            Object.entries(data).forEach(([algo, result]) => {
+                console.log(algo);
+                console.log(typeof(algo));
+                console.log(result);
+                L.circleMarker([+result[0], +result[1]], {radius : 10, renderer : myRenderer})
+                    .setStyle({color: 'green', fillColor: 'green'})
+                    .addTo(map);
+                    //.bindPopup("Prediction: " + algo);
+                });
+        })
         .catch(error => console.error('Error:', error));
     });
 });

@@ -3,6 +3,8 @@ from flask_caching import Cache
 from flask_compress import Compress
 import pandas as pd
 import orjson
+import json
+from algos.frank import choose_new_location as frank_choose_new_location
 
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache'})
@@ -44,9 +46,15 @@ def run_model() -> Response:
     List of latitudes and longitudes based on model calls
     '''
     #this will be a method that calls the model on given data
-    #may format the return data to be used in webpage
     #post to local file that can be detected and run by javascript
-    return request.json
+    data = request.json['filtered_station_data']
+    existing_locations = [(entry[0], entry[1]) for entry in data]
+    frank_pred = frank_choose_new_location(existing_locations)
+
+
+    predictions = {'Frank' : [round(float(frank_pred[0]), 5), round(float(frank_pred[1]), 5)]}
+    pred_json = orjson.dumps(predictions)
+    return Response(pred_json, content_type='application/json')
 
 
 if __name__ == "__main__":
