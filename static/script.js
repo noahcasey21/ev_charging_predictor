@@ -103,7 +103,7 @@ getData('/station_data').then((data) => {
         .then(response => response.json())
         .then(data => {
             const zoom = map.getZoom()
-            map.setZoom(zoom - 5)
+            map.setZoom(zoom - 3.5)
             //structure: {"frank's algo" : [1, 2], ...}
             Object.entries(data).forEach(([algo, result]) => {
                 console.log(algo);
@@ -111,8 +111,8 @@ getData('/station_data').then((data) => {
                 console.log(result);
                 L.circleMarker([+result[0], +result[1]], {radius : 10, renderer : myRenderer})
                     .setStyle({color: 'green', fillColor: 'green'})
-                    .addTo(map);
-                    //.bindPopup("Prediction: " + algo);
+                    .addTo(map)
+                    .bindPopup("Prediction: " + algo);
                 });
         })
         .catch(error => console.error('Error:', error));
