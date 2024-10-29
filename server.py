@@ -5,6 +5,7 @@ import pandas as pd
 import orjson
 import json
 from algos.frank import choose_new_location as frank_choose_new_location
+from algos.noah_c import choose_new_location as noah_choose_new_location
 
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache'})
@@ -50,9 +51,12 @@ def run_model() -> Response:
     data = request.json['filtered_station_data']
     existing_locations = [(entry[0], entry[1]) for entry in data]
     frank_pred = frank_choose_new_location(existing_locations)
+    noah_pred = noah_choose_new_location(existing_locations)
 
-
-    predictions = {'Frank' : [round(float(frank_pred[0]), 5), round(float(frank_pred[1]), 5)]}
+    predictions = {
+        'Frank' : [round(float(frank_pred[0]), 5), round(float(frank_pred[1]), 5)],
+        'Noah C' : [round(float(noah_pred[0]), 5), round(float(noah_pred[1]), 5)]
+        }
     pred_json = orjson.dumps(predictions)
     return Response(pred_json, content_type='application/json')
 

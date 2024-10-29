@@ -103,11 +103,10 @@ getData('/station_data').then((data) => {
         .then(response => response.json())
         .then(data => {
             const zoom = map.getZoom()
-            map.setZoom(zoom - 3.5)
+            map.setZoom(zoom - 3)
             //structure: {"frank's algo" : [1, 2], ...}
             Object.entries(data).forEach(([algo, result]) => {
                 console.log(algo);
-                console.log(typeof(algo));
                 console.log(result);
                 L.circleMarker([+result[0], +result[1]], {radius : 10, renderer : myRenderer})
                     .setStyle({color: 'green', fillColor: 'green'})
