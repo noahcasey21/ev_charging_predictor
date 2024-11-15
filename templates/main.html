@@ -21,6 +21,11 @@
 
     <div id="map"></div>
 
+    <div>
+        <label for="dateSlider">Select Max Open Date:</label>
+        <input type="range" id="dateSlider">
+        <span id="selectedDate"></span>
+    </div>
 
     <button id="modelSend">Predict Locations</button>
     <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
