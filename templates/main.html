@@ -4,12 +4,12 @@
     <title>EV Station Explore</title>
     <meta charset="utf-8">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='/leaflet/leaflet.css') }}" />
-    <script type="text/javascript" src="{{ url_for('static', filename='/leaflet/leaflet.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}" />
+    <script type="text/javascript" src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
     <!-- <script type="text/javascript" src="{{ url_for('static', filename='/d3/d3.v7.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='/d3/d3.v7.min.js') }}"></script> -->
     <!-- <link rel="shortcut icon" href="../static/elephant.png"> -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='/favicon.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 
 </head>
 
@@ -26,8 +26,13 @@
         <input type="range" id="dateSlider">
         <span id="selectedDate"></span>
     </div>
-
+    <form id="locationForm">
+        <label for="location">Enter Zip Code or City:</label>
+        <input type="text" id="location" name="location" required>
+        <button type="submit">Search</button>
+    </form>    
     <button id="modelSend">Predict Locations</button>
     <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='scriptfrank.js') }}"></script>
 
 </body>

@@ -27,19 +27,21 @@ function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, s
             obj.Longitude <= rightLong &&
             obj.Latitude >= bottomLat &&
             obj.Latitude <= topLat &&
-            openDate <= selectedDate
+            openDate.getTime() <= selectedDate.getTime()
         );
     });
 
     // Clear existing markers
     map.eachLayer(layer => {
-        if (layer instanceof L.CircleMarker && !layer._popup) {
+       console.log(layer);
+    if (layer instanceof L.CircleMarker) {
+        console.log(layer.constructor.name);
             map.removeLayer(layer);
         }
     });
 
     // Loop through filtered data and add markers
-    for (let i = 0; i < filtered_station_data.length; i++) {
+    for (let i = 0; i<filtered_station_data.length; i++) {
         const station = filtered_station_data[i];
         L.circleMarker([station['Latitude'], station['Longitude']], { radius: 3, renderer: myRenderer })
             .addTo(map)

@@ -27,11 +27,7 @@ def index() -> None:
 @app.route('/station_data', methods=['GET'])
 @cache.cached(timeout=300)
 def get_data() -> Response:
-    df = pd.read_csv('data/alt_fuel_station.csv')
-    keep_cols = ['Groups With Access Code', 'Fuel Type Code', 'Station Name', 'Street Address', 'City', 'State', 'ZIP', 'Status Code'
-                 , 'Latitude', 'Longitude', 'Open Date']
-    df = df[keep_cols].dropna(how='any')
-    df = df[(df['Status Code'] == 'E') & (df['Fuel Type Code'] == 'ELEC') & (df['Groups With Access Code'].str.contains('Public'))].drop(['Status Code', 'Fuel Type Code', 'Groups With Access Code'], axis=1)
+    df = pd.read_parquet('data/alt_fuel_station.parquet')
     json_data = orjson.dumps(df.to_dict(orient='records'))
     return Response(json_data, content_type='application/json')
 
