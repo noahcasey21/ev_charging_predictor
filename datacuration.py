@@ -28,7 +28,7 @@ def GeneratePredictions(parquet_file_path, output_file_path):
     print(df.head())
     # Create a DataFrame to store the predictions
     predictions = pd.DataFrame(columns=['Algorithm', 'Year', 'City', 'State', 'Latitude', 'Longitude'])
-    for year in range(2010, 2025):
+    for year in range(2010, 2024):
         df_year = df[df['Year'] < year]
         city_state_group = df_year.groupby(['City', 'State']).filter(lambda x: len(x) > 10).groupby(['City', 'State'])
 
@@ -54,8 +54,8 @@ def GeneratePredictions(parquet_file_path, output_file_path):
                  'Year': year,
                  'City': city,
                  'State': state,
-                 'New_Latitude': new_location[0],
-                 'New_Longitude': new_location[1]
+                 'Latitude': new_location[0],
+                 'Longitude': new_location[1]
             }])], ignore_index=True)
             
             #Prediction 3
@@ -65,8 +65,8 @@ def GeneratePredictions(parquet_file_path, output_file_path):
                  'Year': year,
                  'City': city,
                  'State': state,
-                 'New_Latitude': new_location[0],
-                 'New_Longitude': new_location[1]
+                 'Latitude': new_location[0],
+                 'Longitude': new_location[1]
             }])], ignore_index=True)
 
     # Save the predictions DataFrame to a Parquet file
