@@ -51,10 +51,25 @@ function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, s
                     + '<br>' + station.City + ', ' + station.State + '<br>Open Date: ' + station['Open Date']);
         }
         else {
+            let color;
+            switch (station['Algorithm']) {
+                case 'Frank':
+                    color = 'red';
+                    break;
+                case 'Noah_C':
+                    color = 'green';
+                    break;
+                case 'Noah_S':
+                    color = 'black';
+                    break;
+                default:
+                    color = 'red';
+            }
+
             L.circleMarker([station['Latitude'], station['Longitude']], { radius: 3, renderer: myRenderer })
-                .setStyle({ color: 'red', fillColor: 'red', shape: 'square' })
+                .setStyle({ color: color, fillColor: color })
                 .addTo(map)
-                .bindPopup("Prediction: " + station['Algorithm']+ '<br>' + station.City + ', ' + station.State);
+                .bindPopup("Prediction: " + station['Algorithm'] + '<br>' + station.City + ', ' + station.State);
         }
     }
     

@@ -32,9 +32,11 @@ def GeneratePredictions(parquet_file_path, output_file_path):
         df_year = df[df['Year'] < year]
         city_state_group = df_year.groupby(['City', 'State']).filter(lambda x: len(x) > 10).groupby(['City', 'State'])
 
-        for (city, state), group in list(city_state_group)[:5]:
+        for (city, state), group in list(city_state_group):
             print(year, city, state)
             locations = list(group[['Latitude', 'Longitude']].itertuples(index=False, name=None))
+            
+            #Prediction 1
             new_location = frank_choose_new_location(locations)
             predictions = pd.concat([predictions, pd.DataFrame([{
                 'Algorithm': 'Frank',
@@ -44,24 +46,28 @@ def GeneratePredictions(parquet_file_path, output_file_path):
                 'Latitude': new_location[0],
                 'Longitude': new_location[1]
             }])], ignore_index=True)
-            # new_location = noah_choose_new_location(locations)
-            # predictions = pd.concat([predictions, pd.DataFrame([{
-            #     'Algorithm': 'Noah_C',
-            #     'Year': year,
-            #     'City': city,
-            #     'State': state,
-            #     'New_Latitude': new_location[0],
-            #     'New_Longitude': new_location[1]
-            # }])], ignore_index=True)
-            # new_location = choose_new_location_kmeans(locations)
-            # predictions = pd.concat([predictions, pd.DataFrame([{
-            #     'Algorithm': 'Noah_S',
-            #     'Year': year,
-            #     'City': city,
-            #     'State': state,
-            #     'New_Latitude': new_location[0],
-            #     'New_Longitude': new_location[1]
-            # }])], ignore_index=True)
+            
+            #Prediction 2
+            new_location = noah_choose_new_location(locations)
+            predictions = pd.concat([predictions, pd.DataFrame([{
+                 'Algorithm': 'Noah_C',
+                 'Year': year,
+                 'City': city,
+                 'State': state,
+                 'New_Latitude': new_location[0],
+                 'New_Longitude': new_location[1]
+            }])], ignore_index=True)
+            
+            #Prediction 3
+            new_location = choose_new_location_kmeans(locations)
+            predictions = pd.concat([predictions, pd.DataFrame([{
+                 'Algorithm': 'Noah_S',
+                 'Year': year,
+                 'City': city,
+                 'State': state,
+                 'New_Latitude': new_location[0],
+                 'New_Longitude': new_location[1]
+            }])], ignore_index=True)
 
     # Save the predictions DataFrame to a Parquet file
     predictions.to_parquet(output_file_path, engine='fastparquet')
