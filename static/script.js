@@ -18,7 +18,7 @@ function getMapBounds() {
     return [bounds.getNorth(), bounds.getSouth(), bounds.getWest(), bounds.getEast()]
 }
 
-function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, selectedDate) {
+function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, selectedYear) {
     // Filter station data by map bounds and selected date
     const filtered_station_data = station_data.filter(obj => {
         const openDate = parseDate(obj["Open Date"]);
@@ -27,7 +27,7 @@ function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, s
             obj.Longitude <= rightLong &&
             obj.Latitude >= bottomLat &&
             obj.Latitude <= topLat &&
-            openDate.getTime() <= selectedDate.getTime()
+            obj.Year < selectedYear               
         );
     });
 
@@ -43,25 +43,86 @@ function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, s
     // Loop through filtered data and add markers
     for (let i = 0; i<filtered_station_data.length; i++) {
         const station = filtered_station_data[i];
-        L.circleMarker([station['Latitude'], station['Longitude']], { radius: 3, renderer: myRenderer })
-            .addTo(map)
-            .bindPopup(station['Station Name'] + '<br>' + station['Street Address']
-                + '<br>' + station.City + ', ' + station.State + '<br>Open Date: ' + station['Open Date']);
+
+        if (station['Algorithm'] === 'Original') {
+            L.circleMarker([station['Latitude'], station['Longitude']], { radius: 3, renderer: myRenderer })
+                .addTo(map)
+                .bindPopup(station['Station Name'] + '<br>' + station['Street Address']
+                    + '<br>' + station.City + ', ' + station.State + '<br>Open Date: ' + station['Open Date']);
+        }
+        else {
+            L.circleMarker([station['Latitude'], station['Longitude']], { radius: 3, renderer: myRenderer })
+                .setStyle({ color: 'red', fillColor: 'red', shape: 'square' })
+                .addTo(map)
+                .bindPopup("Prediction: " + station['Algorithm']+ '<br>' + station.City + ', ' + station.State);
+        }
     }
+    
 }
 
 
 // Function to get the selected date from the slider
-function getSelectedDate() {
-    return new Date(minDate.getTime() + dateSlider.value * (1000 * 60 * 60 * 24));
+function getYear() {
+    return parseInt(dateSlider.value, 10);//Date(minDate.getTime() + dateSlider.value * (1000 * 60 * 60 * 24));
 }
 
 // Update the displayed date
 function updateDateDisplay() {
-    const selectedDate = getSelectedDate();
-    selectedDateSpan.textContent = selectedDate.toISOString().split("T")[0];
+    const year = getYear();
+    yearSpan.textContent = `Year: ${year}`;// selectedDate.toISOString().split("T")[0];
+    
+    
 }
+function loadCities(station_data) {
+    // Get unique list of cities
+    const selectedYear = getYear();
+    const uniqueCities = [...new Set(station_data
+        .filter(station => station['Algorithm'] !== 'Original' && station.Year == selectedYear)
+        .map(station => `${station.City}, ${station.State}`))];
 
+    // Get the location dropdown element
+    const locationDropdown = document.getElementById('locationDropdown');
+
+    // Get the currently selected value
+    const selectedValue = locationDropdown.value;
+
+    // Clear existing options
+    locationDropdown.innerHTML = '';
+
+    // Add unique cities to the dropdown
+    uniqueCities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        locationDropdown.appendChild(option);
+    });
+
+    // Restore the previously selected value if it exists
+    if (uniqueCities.includes(selectedValue)) {
+        locationDropdown.value = selectedValue;
+    }
+    centerLocation(locationDropdown.value);
+}
+function centerLocation(location) {
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                const lat = data[0].lat;
+                const lon = data[0].lon;
+                map.setView([lat, lon], 13);
+                L.marker([lat, lon]).addTo(map)
+                    .bindPopup(`<b>${location}</b>`)
+                    .openPopup();
+            } else {
+                alert('Location not found');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while searching for the location');
+        });    
+}
 var maxBounds = [
     [24.396308, -125.000000], // Southwest corner
     [49.384358, -66.934570]   // Northeast corner
@@ -92,12 +153,12 @@ const maxDate = new Date("2024-12-31");
 const dayDifference = (maxDate - minDate) / (1000 * 60 * 60 * 24);
 
 const dateSlider = document.getElementById("dateSlider");
-const selectedDateSpan = document.getElementById("selectedDate");
+const yearSpan = document.getElementById("yearSpan");
 
 // Set up the slider attributes
-dateSlider.min = 0;
-dateSlider.max = dayDifference;
-dateSlider.value = dayDifference;
+dateSlider.min = 2010;
+dateSlider.max = 2024;//dayDifference;
+dateSlider.value = 2024;
 
 // Initialize date display
 updateDateDisplay();
@@ -112,28 +173,29 @@ getData('/station_data').then((data) => {
 
     var [top, bottom, left, right] = getMapBounds();
 
-    const selectedDate = getSelectedDate();
-    displayStations(left, right, bottom, top, station_data, selectedDate);
+    const selectedYear = getYear();
+    displayStations(left, right, bottom, top, station_data, selectedYear);
 
     map.on("moveend", () => {
         const [top, bottom, left, right] = getMapBounds();
-        const selectedDate = getSelectedDate();
+        const selectedYear = getYear();
     
         // Call displayStations with the updated date and map bounds
-        displayStations(left, right, bottom, top, station_data, selectedDate);
+        displayStations(left, right, bottom, top, station_data, selectedYear);
     });
-
+    loadCities(station_data);
     dateSlider.addEventListener("input", updateDateDisplay);
     dateSlider.addEventListener("input", () => {
         const [top, bottom, left, right] = getMapBounds();
-        const selectedDate = getSelectedDate();
-        displayStations(left, right, bottom, top, station_data, selectedDate);
+        const selectedYear = getYear();
+        loadCities(station_data);
+        displayStations(left, right, bottom, top, station_data, selectedYear);       
     });
     
 
     document.getElementById('modelSend').addEventListener('click', () => {
         const [top, bottom, left, right] = getMapBounds();
-        const selectedDate = getSelectedDate();
+        const selectedYear = getYear();
     
         // Filter by map bounds and date
         let filtered_station_data = station_data.filter(obj => {
@@ -143,7 +205,7 @@ getData('/station_data').then((data) => {
                 obj.Longitude <= right &&
                 obj.Latitude >= bottom &&
                 obj.Latitude <= top &&
-                openDate <= selectedDate
+                obj.Year <= selectedYear
             );
         });
     

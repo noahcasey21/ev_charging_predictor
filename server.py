@@ -27,7 +27,7 @@ def index() -> None:
 @app.route('/station_data', methods=['GET'])
 @cache.cached(timeout=300)
 def get_data() -> Response:
-    df = pd.read_parquet('data/alt_fuel_station.parquet')
+    df = pd.read_parquet('data/MapData.parquet')
     json_data = orjson.dumps(df.to_dict(orient='records'))
     return Response(json_data, content_type='application/json')
 

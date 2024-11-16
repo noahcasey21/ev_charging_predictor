@@ -22,14 +22,16 @@
     <div id="map"></div>
 
     <div>
-        <label for="dateSlider">Select Max Open Date:</label>
-        <input type="range" id="dateSlider">
-        <span id="selectedDate"></span>
+        <label for="dateSlider">Select Year:</label>
+        <input type="range" id="dateSlider" min="2010" max="2025">
+        <span id="yearSpan"></span>
     </div>
     <form id="locationForm">
-        <label for="location">Enter Zip Code or City:</label>
-        <input type="text" id="location" name="location" required>
-        <button type="submit">Search</button>
+        <label for="location">City:</label>
+        <select id="locationDropdown" name="location" required>
+            <option value="" disabled selected>Select a city</option>
+        </select>
+        
     </form>    
     <button id="modelSend">Predict Locations</button>
     <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
