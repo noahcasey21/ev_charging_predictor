@@ -27,7 +27,7 @@ function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, s
             obj.Longitude <= rightLong &&
             obj.Latitude >= bottomLat &&
             obj.Latitude <= topLat &&
-            obj.Year < selectedYear               
+            obj.Year <= selectedYear               
         );
     });
 
@@ -50,7 +50,7 @@ function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, s
                 .bindPopup(station['Station Name'] + '<br>' + station['Street Address']
                     + '<br>' + station.City + ', ' + station.State + '<br>Open Date: ' + station['Open Date']);
         }
-        else {
+        else if (station['Year'] == selectedYear) {
             let color;
             switch (station['Algorithm']) {
                 case 'Frank':
@@ -66,7 +66,7 @@ function displayStations(leftLong, rightLong, bottomLat, topLat, station_data, s
                     color = 'red';
             }
 
-            L.circleMarker([station['Latitude'], station['Longitude']], { radius: 3, renderer: myRenderer })
+            L.circleMarker([station['Latitude'], station['Longitude']], { radius: 5, renderer: myRenderer })
                 .setStyle({ color: color, fillColor: color })
                 .addTo(map)
                 .bindPopup("Prediction: " + station['Algorithm'] + '<br>' + station.City + ', ' + station.State);
