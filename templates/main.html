@@ -18,29 +18,29 @@
     <div id="loader-container">
         <div id="spinner"></div>
     </div>
-    <h1>EV Station Planner</h1>
+    <h1>EV Charging Station Location Selection utility</h1>
     <div id="map"></div>
 
     <div style="display: flex; justify-content: flex-start; align-items: flex-start; gap: 20px;">
         <div>
-            <label for="dateSlider">Select Year:</label>
+            <label for="dateSlider"><b>Select Year:</b></label>
             <input type="range" id="dateSlider" min="2010" max="2025">
             <span id="yearSpan"></span>
         </div>
         <form id="locationForm">
-            <label for="location">City:</label>
+            <label for="location"><b>City:</b></label>
             <select id="locationDropdown" name="location" required>
-                <option value="" disabled selected>Select a city</option>
+            <option value="" disabled selected>Select a city</option>
             </select>
         </form>
         <!--<button id="modelSend">Predict Locations</button>-->
-        <div id="legend">
-            <h3>Legend</h3>
-            <ul>
-                <li><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: blue;"></span> Actual Station</li>
-                <li><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: red;"></span> Frank Prediction</li>
-                <li><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: green;"></span> Noah C. Prediction</li>
-                <li><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: black;"></span> Noah S. Prediction</li>
+        <div id="legend" style="display: flex; align-items: flex-start;">
+            <label style="margin-right: 10px; font-weight: bold;">Legend</label>
+            <ul style="display: flex; list-style-type: none; padding: 10px; margin: 0; border: 1px solid black; border-radius: 5px;">
+            <li style="margin-right: 10px;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: blue;"></span> Actual Station</li>
+            <li style="margin-right: 10px;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: red;"></span> Frank Prediction</li>
+            <li style="margin-right: 10px;"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: green;"></span> Noah C. Prediction</li>
+            <li><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: black;"></span> Noah S. Prediction</li>
             </ul>
         </div>
     </div>
